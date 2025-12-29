@@ -15,8 +15,8 @@ import {
     Menu,
     X,
     ChevronLeft,
-    Sparkles,
-    Command
+    Command,
+    DoorOpen
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -75,8 +75,9 @@ export default function Sidebar() {
                     {/* Header */}
                     <div className="p-6 flex items-center justify-between">
                         <div className="flex items-center gap-3 overflow-hidden">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--primary-500)] to-[var(--accent-500)] flex items-center justify-center shrink-0 shadow-lg shadow-cyan-500/20">
-                                <Sparkles size={20} className="text-white" />
+                            {/* New Logo: Indigo Gradient with Door Icon */}
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--primary-600)] to-[var(--primary-800)] flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20">
+                                <DoorOpen size={20} className="text-white" />
                             </div>
 
                             <AnimatePresence mode="popLayout">
@@ -87,11 +88,11 @@ export default function Sidebar() {
                                         exit={{ opacity: 0, x: -20 }}
                                         className="flex flex-col"
                                     >
-                                        <span className="font-bold text-lg text-[var(--text-primary)] whitespace-nowrap">
+                                        <span className="font-bold text-lg text-[var(--text-primary)] whitespace-nowrap tracking-tight">
                                             Hello Roomie
                                         </span>
                                         <span className="text-xs text-[var(--text-tertiary)] font-medium">
-                                            Admin Workspace
+                                            Admin Portal
                                         </span>
                                     </motion.div>
                                 )}
@@ -125,16 +126,16 @@ export default function Sidebar() {
                             animate={{ opacity: 1, y: 0 }}
                             className="px-4 mb-4"
                         >
-                            <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-[var(--bg-tertiary)] border border-[var(--border-primary)]">
-                                <Command size={16} className="text-[var(--text-tertiary)]" />
-                                <span className="text-xs text-[var(--text-tertiary)]">Search...</span>
+                            <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-[var(--bg-tertiary)] border border-[var(--border-primary)] group focus-within:border-[var(--primary-500)] transition-colors">
+                                <Command size={16} className="text-[var(--text-tertiary)] group-focus-within:text-[var(--primary-500)]" />
+                                <span className="text-xs text-[var(--text-tertiary)]">Jump to...</span>
                                 <span className="ml-auto text-[10px] text-[var(--text-tertiary)] bg-[var(--bg-elevated)] px-1.5 py-0.5 rounded border border-[var(--border-secondary)]">⌘K</span>
                             </div>
                         </motion.div>
                     )}
 
                     {/* Navigation */}
-                    <nav className="flex-1 px-3 space-y-1.5 overflow-y-auto py-2">
+                    <nav className="flex-1 px-3 space-y-1.5 overflow-y-auto py-2 custom-scrollbar">
                         {navItems.map((item) => {
                             const isActive = pathname === item.href ||
                                 (item.href !== '/' && pathname.startsWith(item.href));
@@ -148,25 +149,17 @@ export default function Sidebar() {
                                     className={cn(
                                         "flex items-center gap-3 px-3 py-3 rounded-xl font-medium text-sm transition-all duration-200 group relative overflow-hidden",
                                         isActive
-                                            ? "text-[var(--primary-400)]"
+                                            ? "text-[var(--primary-400)] bg-[var(--bg-tertiary)]"
                                             : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]"
                                     )}
                                 >
-                                    {isActive && (
-                                        <motion.div
-                                            layoutId="activeTab"
-                                            className="absolute inset-0 bg-gradient-to-r from-[var(--primary-500)]/10 to-[var(--accent-500)]/10 border border-[var(--primary-500)]/20 rounded-xl"
-                                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                        />
-                                    )}
-
                                     <div className={cn(
                                         "flex items-center gap-3 relative z-10 w-full",
                                         isCollapsed && "justify-center"
                                     )}>
                                         <Icon size={20} className={cn(
                                             "shrink-0 transition-colors",
-                                            isActive ? "text-[var(--primary-400)]" : "group-hover:text-[var(--text-primary)]"
+                                            isActive ? "text-[var(--primary-500)]" : "group-hover:text-[var(--text-primary)]"
                                         )} />
 
                                         {!isCollapsed && (
@@ -181,10 +174,10 @@ export default function Sidebar() {
                                         )}
                                     </div>
 
-                                    {isActive && !isCollapsed && (
+                                    {isActive && (
                                         <motion.div
-                                            layoutId="activeGlow"
-                                            className="absolute right-3 w-1.5 h-1.5 rounded-full bg-[var(--primary-400)] shadow-[0_0_8px_rgba(34,211,238,0.6)]"
+                                            layoutId="activeIndicator"
+                                            className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full bg-[var(--primary-500)]"
                                         />
                                     )}
                                 </Link>
@@ -207,7 +200,7 @@ export default function Sidebar() {
 
                         <button
                             className={cn(
-                                "w-full flex items-center gap-3 px-3 py-3 rounded-xl font-medium text-sm text-[var(--error-400)] hover:bg-[var(--error-500)]/10 transition-all",
+                                "w-full flex items-center gap-3 px-3 py-3 rounded-xl font-medium text-sm text-[var(--error-400)] hover:bg-[var(--error-400)]/10 transition-all",
                                 isCollapsed && "justify-center"
                             )}
                         >

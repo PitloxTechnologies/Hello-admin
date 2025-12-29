@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, MoreVertical, Search } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 
 interface Column<T> {
     key: keyof T | string;
@@ -20,9 +20,10 @@ interface DataTableProps<T> {
     emptyMessage?: string;
     loading?: boolean;
     pageSize?: number;
+    rowId?: keyof T; // Allow specifying the unique ID field
 }
 
-export default function DataTable<T extends { id?: string }>({
+export default function DataTable<T>({
     columns,
     data,
     searchable = true,
@@ -32,6 +33,7 @@ export default function DataTable<T extends { id?: string }>({
     emptyMessage = 'No data found',
     loading = false,
     pageSize = 10,
+    rowId,
 }: DataTableProps<T>) {
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -53,7 +55,11 @@ export default function DataTable<T extends { id?: string }>({
 
         if (aValue === bValue) return 0;
 
-        const comparison = aValue! < bValue! ? -1 : 1;
+        // Handle specific types if needed, else string conversion
+        const aStr = String(aValue);
+        const bStr = String(bValue);
+
+        const comparison = aStr < bStr ? -1 : 1;
         return sortConfig.direction === 'asc' ? comparison : -comparison;
     });
 
@@ -82,10 +88,18 @@ export default function DataTable<T extends { id?: string }>({
         return value;
     };
 
+    const getRowKey = (item: T, index: number): string | number => {
+        if (rowId) return String((item as any)[rowId]);
+        if ('id' in (item as any)) return String((item as any).id);
+        if ('uid' in (item as any)) return String((item as any).uid);
+        if ('_id' in (item as any)) return String((item as any)._id);
+        return index;
+    };
+
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="loading-spinner" />
+                <div className="loading-spinner w-8 h-8 border-2 border-[var(--primary-500)] border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -104,13 +118,13 @@ export default function DataTable<T extends { id?: string }>({
                             setSearchQuery(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="input pl-11"
+                        className="input pl-11 focus:ring-2 focus:ring-[var(--primary-500)]/20"
                     />
                 </div>
             )}
 
             {/* Table */}
-            <div className="table-container bg-[var(--bg-secondary)]">
+            <div className="table-container bg-[var(--bg-secondary)] shadow-sm">
                 <table className="table">
                     <thead>
                         <tr>
@@ -118,32 +132,35 @@ export default function DataTable<T extends { id?: string }>({
                                 <th
                                     key={String(column.key)}
                                     onClick={() => column.sortable && handleSort(String(column.key))}
-                                    className={column.sortable ? 'cursor-pointer hover:text-[var(--text-primary)]' : ''}
+                                    className={column.sortable ? 'cursor-pointer hover:text-[var(--primary-400)] transition-colors' : ''}
                                 >
                                     <div className="flex items-center gap-2">
                                         {column.label}
                                         {sortConfig?.key === String(column.key) && (
-                                            <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                                            <span className="text-[var(--primary-500)] font-bold">{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
                                         )}
                                     </div>
                                 </th>
                             ))}
-                            {actions && <th className="w-12">Actions</th>}
+                            {actions && <th className="w-16 text-right pr-6">Actions</th>}
                         </tr>
                     </thead>
                     <tbody>
                         {paginatedData.length === 0 ? (
                             <tr>
-                                <td colSpan={columns.length + (actions ? 1 : 0)} className="text-center py-12">
-                                    <p className="text-[var(--text-tertiary)]">{emptyMessage}</p>
+                                <td colSpan={columns.length + (actions ? 1 : 0)} className="text-center py-16">
+                                    <div className="flex flex-col items-center justify-center text-[var(--text-tertiary)]">
+                                        <Search size={32} className="mb-2 opacity-20" />
+                                        <p>{emptyMessage}</p>
+                                    </div>
                                 </td>
                             </tr>
                         ) : (
                             paginatedData.map((item, index) => (
                                 <tr
-                                    key={item.id || index}
+                                    key={getRowKey(item, index)}
                                     onClick={() => onRowClick?.(item)}
-                                    className={onRowClick ? 'cursor-pointer' : ''}
+                                    className={`border-b border-[var(--border-primary)] last:border-0 transition-colors ${onRowClick ? 'cursor-pointer hover:bg-[var(--bg-tertiary)]/50' : ''}`}
                                 >
                                     {columns.map((column) => (
                                         <td key={String(column.key)}>
@@ -153,7 +170,7 @@ export default function DataTable<T extends { id?: string }>({
                                         </td>
                                     ))}
                                     {actions && (
-                                        <td onClick={(e) => e.stopPropagation()}>
+                                        <td className="text-right pr-4" onClick={(e) => e.stopPropagation()}>
                                             {actions(item)}
                                         </td>
                                     )}
@@ -166,19 +183,20 @@ export default function DataTable<T extends { id?: string }>({
 
             {/* Pagination */}
             {totalPages > 1 && (
-                <div className="flex items-center justify-between">
-                    <p className="text-sm text-[var(--text-secondary)]">
-                        Showing {(currentPage - 1) * pageSize + 1} to{' '}
-                        {Math.min(currentPage * pageSize, sortedData.length)} of {sortedData.length} results
+                <div className="flex items-center justify-between px-2">
+                    <p className="text-sm text-[var(--text-tertiary)]">
+                        Showing <span className="font-medium text-[var(--text-primary)]">{(currentPage - 1) * pageSize + 1}</span> to{' '}
+                        <span className="font-medium text-[var(--text-primary)]">{Math.min(currentPage * pageSize, sortedData.length)}</span> of{' '}
+                        <span className="font-medium text-[var(--text-primary)]">{sortedData.length}</span> results
                     </p>
 
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                             disabled={currentPage === 1}
-                            className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="p-2 rounded-lg border border-[var(--border-secondary)] hover:bg-[var(--bg-tertiary)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
-                            <ChevronLeft size={18} />
+                            <ChevronLeft size={16} />
                         </button>
 
                         <div className="flex items-center gap-1">
@@ -197,9 +215,9 @@ export default function DataTable<T extends { id?: string }>({
                                         key={pageNum}
                                         onClick={() => setCurrentPage(pageNum)}
                                         className={`
-                      w-9 h-9 rounded-lg text-sm font-medium transition-all
+                      w-8 h-8 rounded-lg text-sm font-medium transition-all
                       ${pageNum === currentPage
-                                                ? 'bg-[var(--primary-500)] text-white'
+                                                ? 'bg-[var(--primary-500)] text-white shadow-md shadow-indigo-500/20'
                                                 : 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
                                             }
                     `}
@@ -213,9 +231,9 @@ export default function DataTable<T extends { id?: string }>({
                         <button
                             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                             disabled={currentPage === totalPages}
-                            className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="p-2 rounded-lg border border-[var(--border-secondary)] hover:bg-[var(--bg-tertiary)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
-                            <ChevronRight size={18} />
+                            <ChevronRight size={16} />
                         </button>
                     </div>
                 </div>
