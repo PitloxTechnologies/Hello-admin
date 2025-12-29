@@ -22,8 +22,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
         <Sidebar />
-        <main className="lg:ml-[280px] min-h-screen p-6 lg:p-8">
-          {children}
+        <main className="lg:ml-[100px] xl:ml-[300px] min-h-screen p-6 transition-[margin] duration-300">
+          <div className="max-w-[1600px] mx-auto">
+            {children}
+          </div>
         </main>
       </body>
     </html>
