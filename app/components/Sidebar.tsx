@@ -76,8 +76,9 @@ export default function Sidebar() {
                     <div className="p-6 flex items-center justify-between">
                         <div className="flex items-center gap-3 overflow-hidden">
                             {/* New Logo: Indigo Gradient with Door Icon */}
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--primary-600)] to-[var(--primary-800)] flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20">
-                                <DoorOpen size={20} className="text-white" />
+                            {/* New Logo: Indigo Gradient with Door Icon */}
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--primary-600)] to-[var(--primary-800)] flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20 overflow-hidden">
+                                <img src="/Logo.png" alt="Hello Roomie" className="w-full h-full object-cover" />
                             </div>
 
                             <AnimatePresence mode="popLayout">

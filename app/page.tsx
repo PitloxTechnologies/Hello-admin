@@ -247,8 +247,12 @@ export default function DashboardPage() {
                                     transition={{ delay: 0.5 + (i * 0.1) }}
                                     className="flex items-center gap-4 p-4 rounded-2xl bg-[var(--bg-tertiary)]/50 hover:bg-[var(--bg-tertiary)] transition-colors group cursor-pointer border border-transparent hover:border-[var(--border-secondary)]"
                                 >
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--primary-500)] to-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-purple-500/20">
-                                        {user.fullName?.[0]}
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--primary-500)] to-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-purple-500/20 overflow-hidden flex-shrink-0">
+                                        {user.profilePictureUrl ? (
+                                            <img src={user.profilePictureUrl} alt={user.fullName} className="w-full h-full object-cover" />
+                                        ) : (
+                                            user.fullName?.[0]
+                                        )}
                                     </div>
                                     <div className="flex-1">
                                         <div className="flex items-center gap-2">
