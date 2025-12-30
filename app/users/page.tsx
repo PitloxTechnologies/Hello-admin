@@ -76,8 +76,12 @@ export default function UsersPage() {
             label: 'User',
             render: (user: User) => (
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary-600)] to-violet-600 flex items-center justify-center text-white font-medium shadow-md shadow-indigo-500/20">
-                        {user.fullName?.charAt(0) || user.displayName?.charAt(0) || '?'}
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary-600)] to-violet-600 flex items-center justify-center text-white font-medium shadow-md shadow-indigo-500/20 overflow-hidden">
+                        {user.profilePictureUrl ? (
+                            <img src={user.profilePictureUrl} alt={user.fullName} className="w-full h-full object-cover" />
+                        ) : (
+                            user.fullName?.charAt(0) || user.displayName?.charAt(0) || '?'
+                        )}
                     </div>
                     <div>
                         <p className="font-medium text-[var(--text-primary)]">
@@ -322,8 +326,12 @@ export default function UsersPage() {
                         {/* Modal Body */}
                         <div className="p-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
                             <div className="flex items-start gap-5 mb-8">
-                                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[var(--primary-600)] to-violet-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-indigo-500/20">
-                                    {selectedUser.fullName?.charAt(0) || '?'}
+                                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[var(--primary-600)] to-violet-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-indigo-500/20 overflow-hidden flex-shrink-0">
+                                    {selectedUser.profilePictureUrl ? (
+                                        <img src={selectedUser.profilePictureUrl} alt={selectedUser.fullName} className="w-full h-full object-cover" />
+                                    ) : (
+                                        selectedUser.fullName?.charAt(0) || '?'
+                                    )}
                                 </div>
                                 <div className="flex-1 pt-1">
                                     <h3 className="text-xl font-bold text-[var(--text-primary)] mb-1">

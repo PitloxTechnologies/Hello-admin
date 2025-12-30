@@ -91,7 +91,7 @@ export default function RoomsPage() {
     return (
         <div className="max-w-7xl mx-auto pt-12 lg:pt-0">
             {/* Page Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <div>
                     <h1 className="page-title">Rooms</h1>
                     <p className="page-subtitle">Manage all room listings</p>
@@ -115,7 +115,7 @@ export default function RoomsPage() {
             </div>
 
             {/* Search and Filters */}
-            <div className="card mb-6">
+            <div className="card mb-8 p-4 bg-[var(--bg-secondary)]/50 backdrop-blur-sm">
                 <div className="flex flex-col lg:flex-row gap-4">
                     <div className="flex-1 relative">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" size={18} />
@@ -156,26 +156,30 @@ export default function RoomsPage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div className="card-glass p-4">
-                    <p className="text-2xl font-bold text-[var(--primary-400)]">{rooms.length}</p>
-                    <p className="text-sm text-[var(--text-tertiary)]">Total Rooms</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div className="card-glass p-6 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary-500)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <p className="text-3xl font-bold text-[var(--primary-400)] mb-1">{rooms.length}</p>
+                    <p className="text-sm text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Total Rooms</p>
                 </div>
-                <div className="card-glass p-4">
-                    <p className="text-2xl font-bold text-[var(--success-400)]">
+                <div className="card-glass p-6 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--success-500)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <p className="text-3xl font-bold text-[var(--success-400)] mb-1">
                         {rooms.filter(r => r.userType === UserType.TENANT).length}
                     </p>
-                    <p className="text-sm text-[var(--text-tertiary)]">Tenants</p>
+                    <p className="text-sm text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Tenants</p>
                 </div>
-                <div className="card-glass p-4">
-                    <p className="text-2xl font-bold text-[var(--accent-400)]">
+                <div className="card-glass p-6 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-500)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <p className="text-3xl font-bold text-[var(--accent-400)] mb-1">
                         {rooms.filter(r => r.userType === UserType.OWNER).length}
                     </p>
-                    <p className="text-sm text-[var(--text-tertiary)]">Owners</p>
+                    <p className="text-sm text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Owners</p>
                 </div>
-                <div className="card-glass p-4">
-                    <p className="text-2xl font-bold text-[var(--warning-400)]">{filteredRooms.length}</p>
-                    <p className="text-sm text-[var(--text-tertiary)]">Filtered Results</p>
+                <div className="card-glass p-6 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--warning-500)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <p className="text-3xl font-bold text-[var(--warning-400)] mb-1">{filteredRooms.length}</p>
+                    <p className="text-sm text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Filtered Results</p>
                 </div>
             </div>
 
@@ -195,188 +199,209 @@ export default function RoomsPage() {
                     </div>
                 </div>
             ) : viewMode === 'grid' ? (
-                <div className="data-grid">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {filteredRooms.map((room) => (
                         <div
                             key={room.id}
                             onClick={() => setSelectedRoom(room)}
-                            className="card hover:border-[var(--border-accent)] cursor-pointer group"
+                            className="card group cursor-pointer hover:shadow-xl hover:shadow-[var(--primary-500)]/10 hover:border-[var(--primary-500)]/30"
                         >
                             {/* Image Placeholder */}
-                            <div className="h-40 -mx-6 -mt-6 mb-4 rounded-t-xl bg-[var(--bg-tertiary)] overflow-hidden relative">
+                            <div className="h-48 rounded-t-xl bg-[var(--bg-tertiary)] overflow-hidden relative">
                                 {room.imageUrls && room.imageUrls.length > 0 ? (
                                     <img
                                         src={room.imageUrls[0]}
                                         alt={room.city}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                     />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-[var(--text-tertiary)]">
-                                        <ImageIcon size={48} />
+                                    <div className="w-full h-full flex items-center justify-center text-[var(--text-tertiary)] bg-gradient-to-br from-[var(--bg-tertiary)] to-[var(--bg-secondary)]">
+                                        <ImageIcon size={48} className="opacity-50" />
                                     </div>
                                 )}
-                                <span className={`absolute top-3 left-3 badge ${room.userType === UserType.TENANT ? 'badge-info' : 'badge-purple'
-                                    }`}>
-                                    {room.userType}
-                                </span>
-                            </div>
-
-                            <div className="flex items-start justify-between mb-3">
-                                <div>
-                                    <h3 className="font-semibold text-[var(--text-primary)] mb-1">{room.city}</h3>
-                                    <p className="text-sm text-[var(--text-tertiary)] flex items-center gap-1">
-                                        <MapPin size={14} />
-                                        {room.nearbyLandmark}
-                                    </p>
+                                <div className="absolute top-3 left-3 flex gap-2">
+                                    <span className={`badge ${room.userType === UserType.TENANT ? 'badge-info' : 'badge-purple'} shadow-lg backdrop-blur-md`}>
+                                        {room.userType}
+                                    </span>
                                 </div>
-                                <p className="text-xl font-bold text-[var(--primary-400)]">
-                                    ₹{room.rentPerHead?.toLocaleString()}
-                                </p>
+                                <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[var(--bg-secondary)] to-transparent" />
                             </div>
 
-                            <p className="text-sm text-[var(--text-secondary)] mb-3 line-clamp-2">
-                                {room.description}
-                            </p>
+                            <div className="p-4 relative">
+                                <div className="flex items-start justify-between mb-3">
+                                    <div className="flex-1 min-w-0 pr-4">
+                                        <h3 className="font-semibold text-[var(--text-primary)] truncate text-lg">{room.city}</h3>
+                                        <p className="text-sm text-[var(--text-secondary)] flex items-center gap-1.5 truncate">
+                                            <MapPin size={14} className="flex-shrink-0 text-[var(--primary-400)]" />
+                                            {room.nearbyLandmark}
+                                        </p>
+                                    </div>
+                                    <div className="text-right flex-shrink-0">
+                                        <p className="text-lg font-bold text-[var(--primary-400)]">
+                                            ₹{room.rentPerHead?.toLocaleString()}
+                                        </p>
+                                    </div>
+                                </div>
 
-                            <div className="flex items-center justify-between pt-3 border-t border-[var(--border-primary)]">
-                                <span className="text-xs text-[var(--text-tertiary)]">{room.sizeOfPlace}</span>
-                                <span className="text-xs text-[var(--text-tertiary)]">{formatTimeAgo(room.createdAt)}</span>
+                                <p className="text-sm text-[var(--text-secondary)] mb-4 line-clamp-2 h-10">
+                                    {room.description}
+                                </p>
+
+                                <div className="flex items-center justify-between pt-4 border-t border-[var(--border-primary)]">
+                                    <span className="text-xs font-medium text-[var(--text-tertiary)] bg-[var(--bg-tertiary)] px-2 py-1 rounded-md">
+                                        {room.sizeOfPlace}
+                                    </span>
+                                    <span className="text-xs text-[var(--text-tertiary)]">{formatTimeAgo(room.createdAt)}</span>
+                                </div>
                             </div>
                         </div>
                     ))}
                 </div>
             ) : (
-                <div className="card p-0">
-                    <div className="space-y-0">
-                        {filteredRooms.map((room, index) => (
-                            <div
-                                key={room.id}
-                                onClick={() => setSelectedRoom(room)}
-                                className={`flex items-center gap-4 p-4 hover:bg-[var(--bg-tertiary)] cursor-pointer ${index !== filteredRooms.length - 1 ? 'border-b border-[var(--border-primary)]' : ''
-                                    }`}
-                            >
-                                <div className="w-20 h-20 rounded-xl bg-[var(--bg-tertiary)] overflow-hidden flex-shrink-0">
-                                    {room.imageUrls && room.imageUrls.length > 0 ? (
-                                        <img
-                                            src={room.imageUrls[0]}
-                                            alt={room.city}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-[var(--text-tertiary)]">
-                                            <ImageIcon size={24} />
+                <div className="table-container">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th className="w-16">Image</th>
+                                <th>City</th>
+                                <th>Landmark</th>
+                                <th>Type</th>
+                                <th>Rent/Head</th>
+                                <th>Size</th>
+                                <th>Created</th>
+                                <th className="w-10"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredRooms.map((room) => (
+                                <tr
+                                    key={room.id}
+                                    onClick={() => setSelectedRoom(room)}
+                                    className="cursor-pointer group"
+                                >
+                                    <td>
+                                        <div className="w-10 h-10 rounded-lg bg-[var(--bg-tertiary)] overflow-hidden">
+                                            {room.imageUrls && room.imageUrls.length > 0 ? (
+                                                <img src={room.imageUrls[0]} alt="" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-[var(--text-tertiary)]">
+                                                    <ImageIcon size={16} />
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <h3 className="font-semibold text-[var(--text-primary)]">{room.city}</h3>
-                                        <span className={`badge ${room.userType === UserType.TENANT ? 'badge-info' : 'badge-purple'
-                                            }`}>
+                                    </td>
+                                    <td className="font-medium text-[var(--text-primary)]">{room.city}</td>
+                                    <td className="text-[var(--text-secondary)]">{room.nearbyLandmark}</td>
+                                    <td>
+                                        <span className={`badge ${room.userType === UserType.TENANT ? 'badge-info' : 'badge-purple'}`}>
                                             {room.userType}
                                         </span>
-                                    </div>
-                                    <p className="text-sm text-[var(--text-tertiary)] mb-1">
-                                        Near {room.nearbyLandmark} • {room.sizeOfPlace}
-                                    </p>
-                                    <p className="text-sm text-[var(--text-secondary)] line-clamp-1">
-                                        {room.description}
-                                    </p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-xl font-bold text-[var(--primary-400)]">
-                                        ₹{room.rentPerHead?.toLocaleString()}
-                                    </p>
-                                    <p className="text-xs text-[var(--text-tertiary)]">/month</p>
-                                </div>
-                                <button
-                                    onClick={(e) => { e.stopPropagation(); handleDeleteRoom(room.id); }}
-                                    className="p-2 rounded-lg hover:bg-[rgba(239,68,68,0.1)] text-[var(--text-tertiary)] hover:text-[var(--error-400)]"
-                                >
-                                    <Trash2 size={18} />
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+                                    </td>
+                                    <td className="font-medium text-[var(--primary-400)]">₹{room.rentPerHead?.toLocaleString()}</td>
+                                    <td className="text-[var(--text-secondary)]">{room.sizeOfPlace}</td>
+                                    <td className="text-[var(--text-tertiary)] text-xs">{formatTimeAgo(room.createdAt)}</td>
+                                    <td>
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); handleDeleteRoom(room.id); }}
+                                            className="p-1.5 rounded-lg text-[var(--text-tertiary)] hover:text-[var(--error-400)] hover:bg-[var(--error-400)]/10 transition-colors opacity-0 group-hover:opacity-100"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             )}
 
             {/* Room Detail Modal */}
             {selectedRoom && (
                 <div className="modal-overlay" onClick={() => setSelectedRoom(null)}>
-                    <div className="modal max-w-2xl" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header flex items-center justify-between">
+                    <div className="modal max-w-4xl max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
                             <h2 className="text-xl font-semibold text-[var(--text-primary)]">Room Details</h2>
                             <button
                                 onClick={() => setSelectedRoom(null)}
-                                className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]"
+                                className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors"
                             >
                                 <X size={20} />
                             </button>
                         </div>
-                        <div className="modal-body">
-                            {/* Image Gallery */}
-                            {selectedRoom.imageUrls && selectedRoom.imageUrls.length > 0 && (
-                                <div className="h-48 -mx-6 -mt-6 mb-6 overflow-hidden">
+                        <div className="flex-1 overflow-hidden lg:grid lg:grid-cols-2">
+                            {/* Left: Images */}
+                            <div className="bg-black/20 p-6 flex items-center justify-center overflow-auto h-64 lg:h-auto border-b lg:border-b-0 lg:border-r border-[var(--border-primary)]">
+                                {selectedRoom.imageUrls && selectedRoom.imageUrls.length > 0 ? (
                                     <img
                                         src={selectedRoom.imageUrls[0]}
                                         alt={selectedRoom.city}
-                                        className="w-full h-full object-cover"
+                                        className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
                                     />
-                                </div>
-                            )}
-
-                            <div className="flex items-start justify-between mb-4">
-                                <div>
-                                    <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-1">
-                                        {selectedRoom.city}
-                                    </h3>
-                                    <p className="text-[var(--text-secondary)] flex items-center gap-1">
-                                        <MapPin size={16} />
-                                        Near {selectedRoom.nearbyLandmark}
-                                    </p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-2xl font-bold text-[var(--primary-400)]">
-                                        ₹{selectedRoom.rentPerHead?.toLocaleString()}
-                                    </p>
-                                    <p className="text-sm text-[var(--text-tertiary)]">per month/head</p>
-                                </div>
+                                ) : (
+                                    <div className="flex flex-col items-center text-[var(--text-tertiary)]">
+                                        <ImageIcon size={64} className="opacity-50" />
+                                        <p>No images available</p>
+                                    </div>
+                                )}
                             </div>
 
-                            <div className="flex items-center gap-2 mb-6">
-                                <span className={`badge ${selectedRoom.userType === UserType.TENANT ? 'badge-info' : 'badge-purple'
-                                    }`}>
-                                    {selectedRoom.userType}
-                                </span>
-                                <span className="badge badge-success">{selectedRoom.sizeOfPlace}</span>
-                            </div>
-
-                            <div className="mb-6">
-                                <h4 className="text-sm font-medium text-[var(--text-tertiary)] mb-2">Description</h4>
-                                <p className="text-[var(--text-primary)]">{selectedRoom.description}</p>
-                            </div>
-
-                            {selectedRoom.amenities && selectedRoom.amenities.length > 0 && (
-                                <div>
-                                    <h4 className="text-sm font-medium text-[var(--text-tertiary)] mb-2">Amenities</h4>
-                                    <div className="flex flex-wrap gap-2">
-                                        {selectedRoom.amenities.map((amenity, i) => (
-                                            <span key={i} className="badge badge-info">{amenity}</span>
-                                        ))}
+                            {/* Right: Info */}
+                            <div className="p-8 overflow-y-auto">
+                                <div className="flex items-start justify-between mb-6">
+                                    <div>
+                                        <h3 className="text-2xl font-bold text-[var(--text-primary)] mb-2">
+                                            {selectedRoom.city}
+                                        </h3>
+                                        <p className="text-[var(--text-secondary)] flex items-center gap-2">
+                                            <MapPin size={18} className="text-[var(--primary-400)]" />
+                                            Near {selectedRoom.nearbyLandmark}
+                                        </p>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-3xl font-bold text-[var(--primary-400)]">
+                                            ₹{selectedRoom.rentPerHead?.toLocaleString()}
+                                        </div>
+                                        <p className="text-sm text-[var(--text-tertiary)]">per month/head</p>
                                     </div>
                                 </div>
-                            )}
+
+                                <div className="flex flex-wrap gap-3 mb-8">
+                                    <span className={`badge px-3 py-1 text-sm ${selectedRoom.userType === UserType.TENANT ? 'badge-info' : 'badge-purple'}`}>
+                                        {selectedRoom.userType}
+                                    </span>
+                                    <span className="badge badge-success px-3 py-1 text-sm">{selectedRoom.sizeOfPlace}</span>
+                                    <span className="badge bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--border-primary)] px-3 py-1 text-sm">
+                                        {formatTimeAgo(selectedRoom.createdAt)}
+                                    </span>
+                                </div>
+
+                                <div className="mb-8">
+                                    <h4 className="text-sm font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-3">Description</h4>
+                                    <p className="text-[var(--text-primary)] leading-relaxed text-lg bg-[var(--bg-tertiary)]/30 p-4 rounded-xl border border-[var(--border-primary)]">
+                                        {selectedRoom.description}
+                                    </p>
+                                </div>
+
+                                {selectedRoom.amenities && selectedRoom.amenities.length > 0 && (
+                                    <div>
+                                        <h4 className="text-sm font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-3">Amenities</h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {selectedRoom.amenities.map((amenity, i) => (
+                                                <span key={i} className="badge badge-info px-3 py-1">
+                                                    {amenity}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                         <div className="modal-footer">
-                            <button onClick={() => setSelectedRoom(null)} className="btn btn-secondary">
-                                Close
-                            </button>
                             <button
                                 onClick={() => handleDeleteRoom(selectedRoom.id)}
                                 className="btn btn-danger"
                             >
-                                <Trash2 size={16} />
+                                <Trash2 size={18} />
                                 Delete Room
                             </button>
                         </div>

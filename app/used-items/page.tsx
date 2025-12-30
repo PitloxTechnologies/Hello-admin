@@ -14,7 +14,8 @@ import {
     Grid,
     List,
     Image as ImageIcon,
-    Star
+    Star,
+    ShoppingBag
 } from 'lucide-react';
 import { usedItemsApi } from '../api/used-items';
 import { UsedItem, ItemCondition } from '../api/types';
@@ -104,7 +105,7 @@ export default function UsedItemsPage() {
     return (
         <div className="max-w-7xl mx-auto pt-12 lg:pt-0">
             {/* Page Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <div>
                     <h1 className="page-title">Used Items</h1>
                     <p className="page-subtitle">Manage marketplace listings</p>
@@ -128,7 +129,7 @@ export default function UsedItemsPage() {
             </div>
 
             {/* Search and Filters */}
-            <div className="card mb-6">
+            <div className="card mb-8 p-4 bg-[var(--bg-secondary)]/50 backdrop-blur-sm">
                 <div className="flex flex-col lg:flex-row gap-4">
                     <div className="flex-1 relative">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" size={18} />
@@ -182,24 +183,28 @@ export default function UsedItemsPage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div className="card-glass p-4">
-                    <p className="text-2xl font-bold text-[var(--primary-400)]">{items.length}</p>
-                    <p className="text-sm text-[var(--text-tertiary)]">Total Items</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div className="card-glass p-6 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary-500)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <p className="text-3xl font-bold text-[var(--primary-400)] mb-1">{items.length}</p>
+                    <p className="text-sm text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Total Items</p>
                 </div>
-                <div className="card-glass p-4">
-                    <p className="text-2xl font-bold text-[var(--success-400)]">{categories.length}</p>
-                    <p className="text-sm text-[var(--text-tertiary)]">Categories</p>
+                <div className="card-glass p-6 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--success-500)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <p className="text-3xl font-bold text-[var(--success-400)] mb-1">{categories.length}</p>
+                    <p className="text-sm text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Categories</p>
                 </div>
-                <div className="card-glass p-4">
-                    <p className="text-2xl font-bold text-[var(--accent-400)]">
+                <div className="card-glass p-6 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-500)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <p className="text-3xl font-bold text-[var(--accent-400)] mb-1">
                         ₹{items.length > 0 ? Math.round(items.reduce((a, b) => a + b.price, 0) / items.length).toLocaleString() : 0}
                     </p>
-                    <p className="text-sm text-[var(--text-tertiary)]">Avg. Price</p>
+                    <p className="text-sm text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Avg. Price</p>
                 </div>
-                <div className="card-glass p-4">
-                    <p className="text-2xl font-bold text-[var(--warning-400)]">{filteredItems.length}</p>
-                    <p className="text-sm text-[var(--text-tertiary)]">Filtered Results</p>
+                <div className="card-glass p-6 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--warning-500)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <p className="text-3xl font-bold text-[var(--warning-400)] mb-1">{filteredItems.length}</p>
+                    <p className="text-sm text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Filtered Results</p>
                 </div>
             </div>
 
@@ -219,190 +224,224 @@ export default function UsedItemsPage() {
                     </div>
                 </div>
             ) : viewMode === 'grid' ? (
-                <div className="data-grid">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {filteredItems.map((item) => (
                         <div
                             key={item.id}
                             onClick={() => setSelectedItem(item)}
-                            className="card hover:border-[var(--border-accent)] cursor-pointer group"
+                            className="card group cursor-pointer hover:shadow-xl hover:shadow-[var(--primary-500)]/10 hover:border-[var(--primary-500)]/30"
                         >
                             {/* Image */}
-                            <div className="h-48 -mx-6 -mt-6 mb-4 rounded-t-xl bg-[var(--bg-tertiary)] overflow-hidden relative">
+                            <div className="h-56 rounded-t-xl bg-[var(--bg-tertiary)] overflow-hidden relative">
                                 {item.imageUrls && item.imageUrls.length > 0 ? (
                                     <img
                                         src={item.imageUrls[0]}
                                         alt={item.brandName}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                     />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-[var(--text-tertiary)]">
-                                        <ImageIcon size={48} />
+                                    <div className="w-full h-full flex items-center justify-center text-[var(--text-tertiary)] bg-gradient-to-br from-[var(--bg-tertiary)] to-[var(--bg-secondary)]">
+                                        <ImageIcon size={48} className="opacity-50" />
                                     </div>
                                 )}
-                                <span className={`absolute top-3 left-3 badge ${conditionColors[item.condition] || 'badge-info'}`}>
-                                    {item.condition}
-                                </span>
+                                <div className="absolute top-3 left-3">
+                                    <span className={`badge ${conditionColors[item.condition] || 'badge-info'} shadow-lg backdrop-blur-md`}>
+                                        {item.condition}
+                                    </span>
+                                </div>
                                 {item.imageUrls && item.imageUrls.length > 1 && (
-                                    <span className="absolute top-3 right-3 badge bg-black/50 text-white">
+                                    <span className="absolute top-3 right-3 badge bg-black/50 text-white backdrop-blur-md border-0">
                                         +{item.imageUrls.length - 1} photos
                                     </span>
                                 )}
+                                <div className="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-[var(--bg-secondary)] to-transparent" />
                             </div>
 
-                            <div className="flex items-start justify-between mb-2">
-                                <div className="flex-1 min-w-0">
-                                    <h3 className="font-semibold text-[var(--text-primary)] truncate">{item.brandName}</h3>
-                                    <p className="text-sm text-[var(--text-tertiary)]">{item.itemType}</p>
+                            <div className="p-4 relative">
+                                <div className="flex items-start justify-between mb-2">
+                                    <div className="flex-1 min-w-0 pr-3">
+                                        <h3 className="font-semibold text-[var(--text-primary)] truncate text-lg">{item.brandName}</h3>
+                                        <p className="text-sm text-[var(--text-secondary)] truncate">{item.itemType}</p>
+                                    </div>
+                                    <p className="text-lg font-bold text-[var(--primary-400)] whitespace-nowrap">
+                                        ₹{item.price?.toLocaleString()}
+                                    </p>
                                 </div>
-                            </div>
 
-                            <p className="text-2xl font-bold text-[var(--primary-400)] mb-2">
-                                ₹{item.price?.toLocaleString()}
-                            </p>
+                                <div className="flex items-center gap-2 mb-4">
+                                    <span className="text-xs font-medium text-[var(--text-tertiary)] bg-[var(--bg-tertiary)] px-2 py-1 rounded-md">
+                                        {item.itemCategory}
+                                    </span>
+                                </div>
 
-                            <p className="text-sm text-[var(--text-secondary)] mb-3 line-clamp-2">
-                                {item.description}
-                            </p>
-
-                            <div className="flex items-center justify-between pt-3 border-t border-[var(--border-primary)]">
-                                <span className="text-xs text-[var(--text-tertiary)] flex items-center gap-1">
-                                    <MapPin size={12} />
-                                    {item.city}
-                                </span>
-                                <span className="text-xs text-[var(--text-tertiary)]">{formatTimeAgo(item.createdAt)}</span>
+                                <div className="flex items-center justify-between pt-4 border-t border-[var(--border-primary)]">
+                                    <span className="text-xs text-[var(--text-secondary)] flex items-center gap-1.5">
+                                        <MapPin size={14} className="text-[var(--primary-400)]" />
+                                        {item.city}
+                                    </span>
+                                    <span className="text-xs text-[var(--text-tertiary)]">{formatTimeAgo(item.createdAt)}</span>
+                                </div>
                             </div>
                         </div>
                     ))}
                 </div>
             ) : (
-                <div className="card p-0">
-                    <div className="space-y-0">
-                        {filteredItems.map((item, index) => (
-                            <div
-                                key={item.id}
-                                onClick={() => setSelectedItem(item)}
-                                className={`flex items-center gap-4 p-4 hover:bg-[var(--bg-tertiary)] cursor-pointer ${index !== filteredItems.length - 1 ? 'border-b border-[var(--border-primary)]' : ''
-                                    }`}
-                            >
-                                <div className="w-20 h-20 rounded-xl bg-[var(--bg-tertiary)] overflow-hidden flex-shrink-0">
-                                    {item.imageUrls && item.imageUrls.length > 0 ? (
-                                        <img
-                                            src={item.imageUrls[0]}
-                                            alt={item.brandName}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-[var(--text-tertiary)]">
-                                            <ImageIcon size={24} />
+                <div className="table-container">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th className="w-16">Image</th>
+                                <th>Item</th>
+                                <th>Category</th>
+                                <th>Condition</th>
+                                <th>Price</th>
+                                <th>Location</th>
+                                <th>Posted</th>
+                                <th className="w-10"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredItems.map((item) => (
+                                <tr
+                                    key={item.id}
+                                    onClick={() => setSelectedItem(item)}
+                                    className="cursor-pointer group"
+                                >
+                                    <td>
+                                        <div className="w-10 h-10 rounded-lg bg-[var(--bg-tertiary)] overflow-hidden">
+                                            {item.imageUrls && item.imageUrls.length > 0 ? (
+                                                <img
+                                                    src={item.imageUrls[0]}
+                                                    alt={item.brandName}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-[var(--text-tertiary)]">
+                                                    <ImageIcon size={16} />
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <h3 className="font-semibold text-[var(--text-primary)]">{item.brandName}</h3>
+                                    </td>
+                                    <td>
+                                        <div className="flex flex-col">
+                                            <span className="font-medium text-[var(--text-primary)]">{item.brandName}</span>
+                                            <span className="text-xs text-[var(--text-tertiary)]">{item.itemType}</span>
+                                        </div>
+                                    </td>
+                                    <td className="text-[var(--text-secondary)]">{item.itemCategory}</td>
+                                    <td>
                                         <span className={`badge ${conditionColors[item.condition] || 'badge-info'}`}>
                                             {item.condition}
                                         </span>
-                                    </div>
-                                    <p className="text-sm text-[var(--text-tertiary)] mb-1">
-                                        {item.itemCategory} • {item.itemType}
-                                    </p>
-                                    <p className="text-sm text-[var(--text-secondary)] line-clamp-1">
-                                        {item.description}
-                                    </p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-xl font-bold text-[var(--primary-400)]">
+                                    </td>
+                                    <td className="font-medium text-[var(--primary-400)]">
                                         ₹{item.price?.toLocaleString()}
-                                    </p>
-                                    <p className="text-xs text-[var(--text-tertiary)]">{item.city}</p>
-                                </div>
-                                <button
-                                    onClick={(e) => { e.stopPropagation(); handleDeleteItem(item.id); }}
-                                    className="p-2 rounded-lg hover:bg-[rgba(239,68,68,0.1)] text-[var(--text-tertiary)] hover:text-[var(--error-400)]"
-                                >
-                                    <Trash2 size={18} />
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+                                    </td>
+                                    <td className="text-[var(--text-secondary)]">{item.city}</td>
+                                    <td className="text-[var(--text-tertiary)] text-xs">{formatTimeAgo(item.createdAt)}</td>
+                                    <td>
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); handleDeleteItem(item.id); }}
+                                            className="p-1.5 rounded-lg text-[var(--text-tertiary)] hover:text-[var(--error-400)] hover:bg-[var(--error-400)]/10 transition-colors opacity-0 group-hover:opacity-100"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             )}
 
             {/* Item Detail Modal */}
             {selectedItem && (
                 <div className="modal-overlay" onClick={() => setSelectedItem(null)}>
-                    <div className="modal max-w-2xl" onClick={(e) => e.stopPropagation()}>
-                        <div className="modal-header flex items-center justify-between">
+                    <div className="modal max-w-4xl max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
                             <h2 className="text-xl font-semibold text-[var(--text-primary)]">Item Details</h2>
                             <button
                                 onClick={() => setSelectedItem(null)}
-                                className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)]"
+                                className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors"
                             >
                                 <X size={20} />
                             </button>
                         </div>
-                        <div className="modal-body">
-                            {/* Image Gallery */}
-                            {selectedItem.imageUrls && selectedItem.imageUrls.length > 0 && (
-                                <div className="h-64 -mx-6 -mt-6 mb-6 overflow-hidden">
+                        <div className="flex-1 overflow-hidden lg:grid lg:grid-cols-2">
+                            {/* Left: Images */}
+                            <div className="bg-black/20 p-6 flex items-center justify-center overflow-auto h-64 lg:h-auto border-b lg:border-b-0 lg:border-r border-[var(--border-primary)]">
+                                {selectedItem.imageUrls && selectedItem.imageUrls.length > 0 ? (
                                     <img
                                         src={selectedItem.imageUrls[0]}
                                         alt={selectedItem.brandName}
-                                        className="w-full h-full object-cover"
+                                        className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
                                     />
-                                </div>
-                            )}
+                                ) : (
+                                    <div className="flex flex-col items-center text-[var(--text-tertiary)]">
+                                        <ImageIcon size={64} className="mb-4 opacity-50" />
+                                        <p>No images available</p>
+                                    </div>
+                                )}
+                            </div>
 
-                            <div className="flex items-start justify-between mb-4">
-                                <div>
-                                    <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-1">
-                                        {selectedItem.brandName}
-                                    </h3>
-                                    <p className="text-[var(--text-secondary)]">
-                                        {selectedItem.itemCategory} • {selectedItem.itemType}
+                            {/* Right: Info */}
+                            <div className="p-8 overflow-y-auto">
+                                <div className="flex items-start justify-between mb-6">
+                                    <div>
+                                        <h3 className="text-2xl font-bold text-[var(--text-primary)] mb-1">
+                                            {selectedItem.brandName}
+                                        </h3>
+                                        <p className="text-[var(--text-secondary)]">
+                                            {selectedItem.itemCategory} • {selectedItem.itemType}
+                                        </p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-3xl font-bold text-[var(--primary-400)]">
+                                            ₹{selectedItem.price?.toLocaleString()}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-wrap gap-3 mb-8">
+                                    <span className={`badge px-3 py-1 text-sm ${conditionColors[selectedItem.condition] || 'badge-info'}`}>
+                                        {selectedItem.condition}
+                                    </span>
+                                    <span className="badge badge-info px-3 py-1 text-sm flex items-center gap-1">
+                                        <MapPin size={14} />
+                                        {selectedItem.city}
+                                    </span>
+                                    <span className="badge bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--border-primary)] px-3 py-1 text-sm">
+                                        {formatTimeAgo(selectedItem.createdAt)}
+                                    </span>
+                                </div>
+
+                                <div className="mb-8">
+                                    <h4 className="text-sm font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-3">Description</h4>
+                                    <p className="text-[var(--text-primary)] leading-relaxed text-lg bg-[var(--bg-tertiary)]/30 p-4 rounded-xl border border-[var(--border-primary)]">
+                                        {selectedItem.description}
                                     </p>
                                 </div>
-                                <p className="text-2xl font-bold text-[var(--primary-400)]">
-                                    ₹{selectedItem.price?.toLocaleString()}
-                                </p>
-                            </div>
 
-                            <div className="flex items-center gap-2 mb-6">
-                                <span className={`badge ${conditionColors[selectedItem.condition] || 'badge-info'}`}>
-                                    {selectedItem.condition}
-                                </span>
-                                <span className="badge badge-info flex items-center gap-1">
-                                    <MapPin size={12} />
-                                    {selectedItem.city}
-                                </span>
-                            </div>
-
-                            <div className="mb-6">
-                                <h4 className="text-sm font-medium text-[var(--text-tertiary)] mb-2">Description</h4>
-                                <p className="text-[var(--text-primary)]">{selectedItem.description}</p>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4 text-sm">
-                                <div>
-                                    <p className="text-[var(--text-tertiary)]">User ID</p>
-                                    <p className="text-[var(--text-primary)] font-mono text-xs">{selectedItem.userId}</p>
-                                </div>
-                                <div>
-                                    <p className="text-[var(--text-tertiary)]">Listed</p>
-                                    <p className="text-[var(--text-primary)]">{formatTimeAgo(selectedItem.createdAt)}</p>
+                                <div className="grid grid-cols-2 gap-6 p-4 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-tertiary)]/10">
+                                    <div>
+                                        <p className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-1">User ID</p>
+                                        <p className="text-[var(--text-primary)] font-mono text-sm truncate" title={selectedItem.userId}>{selectedItem.userId}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs uppercase tracking-wider text-[var(--text-tertiary)] mb-1">Listed On</p>
+                                        <p className="text-[var(--text-primary)] text-sm">
+                                            {selectedItem.createdAt ? new Date(selectedItem.createdAt).toLocaleDateString() : 'Unknown'}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className="modal-footer">
-                            <button onClick={() => setSelectedItem(null)} className="btn btn-secondary">
-                                Close
-                            </button>
                             <button
                                 onClick={() => handleDeleteItem(selectedItem.id)}
                                 className="btn btn-danger"
                             >
-                                <Trash2 size={16} />
+                                <Trash2 size={18} />
                                 Delete Item
                             </button>
                         </div>
