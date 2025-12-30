@@ -52,9 +52,13 @@
   --error-500: #ef4444;
 
   /* Glass Effects - More subtle */
-  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-bg: rgba(15, 23, 42, 0.7);
   --glass-border: rgba(148, 163, 184, 0.1);
-  --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--primary-600), var(--accent-600));
+  --gradient-surface: linear-gradient(to bottom right, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.5));
 
   /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -73,7 +77,8 @@ body {
   overflow-x: hidden;
   /* Clean Gradient Background */
   background-image:
-    linear-gradient(to bottom right, #0f172a, #020617);
+    radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
   background-attachment: fixed;
 }
 
@@ -106,29 +111,41 @@ body {
   border-radius: 1rem;
 }
 
+.page-title {
+  @apply text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-[var(--text-secondary)] tracking-tight;
+}
+
+.page-subtitle {
+  @apply text-[var(--text-secondary)] mt-1;
+}
+
 @layer components {
   .input {
-    @apply w-full bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-xl px-4 py-2.5 text-[var(--text-primary)] transition-all outline-none focus:border-[var(--primary-500)] focus:ring-1 focus:ring-[var(--primary-500)];
+    @apply w-full bg-[var(--bg-secondary)]/50 border border-[var(--border-primary)] rounded-xl px-4 py-2.5 text-[var(--text-primary)] transition-all outline-none focus:border-[var(--primary-500)] focus:ring-1 focus:ring-[var(--primary-500)] placeholder:text-[var(--text-tertiary)] hover:border-[var(--border-secondary)];
+  }
+
+  .card {
+    @apply bg-[var(--bg-secondary)] border border-[var(--border-primary)] rounded-xl overflow-hidden transition-all duration-300;
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium transition-all active:scale-95;
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium transition-all active:scale-95 cursor-pointer;
   }
 
   .btn-primary {
-    @apply bg-[var(--primary-600)] text-white hover:bg-[var(--primary-500)] shadow-lg shadow-indigo-500/20;
+    @apply bg-[var(--primary-600)] text-white hover:bg-[var(--primary-500)] shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30;
   }
 
   .btn-secondary {
-    @apply bg-[var(--bg-tertiary)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)];
+    @apply bg-[var(--bg-tertiary)] text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] border border-[var(--border-primary)];
   }
 
   .btn-danger {
-    @apply bg-red-500/10 text-red-400 hover:bg-red-500/20;
+    @apply bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/10;
   }
 
   .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border shadow-sm;
   }
 
   .badge-info {
@@ -151,6 +168,19 @@ body {
     @apply bg-rose-500/10 text-rose-400 border-rose-500/20;
   }
 
+  /* Tabs/Pills */
+  .tabs {
+    @apply flex p-1 bg-[var(--bg-secondary)] rounded-xl border border-[var(--border-primary)];
+  }
+
+  .tab {
+    @apply px-3 py-1.5 rounded-lg text-sm font-medium text-[var(--text-secondary)] transition-all hover:text-[var(--text-primary)];
+  }
+
+  .tab.active {
+    @apply bg-[var(--bg-tertiary)] text-[var(--text-primary)] shadow-sm;
+  }
+
   /* Table Styles */
   .table-container {
     @apply w-full overflow-hidden rounded-xl border border-[var(--border-primary)];
@@ -161,7 +191,7 @@ body {
   }
 
   .table th {
-    @apply bg-[var(--bg-tertiary)] text-[var(--text-secondary)] font-medium px-4 py-3 border-b border-[var(--border-primary)];
+    @apply bg-[var(--bg-tertiary)]/50 text-[var(--text-secondary)] font-medium px-4 py-3 border-b border-[var(--border-primary)];
   }
 
   .table td {
@@ -173,6 +203,51 @@ body {
   }
 
   .table tr:hover td {
-    @apply bg-[var(--bg-tertiary)];
+    @apply bg-[var(--bg-tertiary)]/30;
   }
+
+  /* Loading */
+  .loading-spinner {
+    @apply w-8 h-8 border-4 border-[var(--primary-500)]/30 border-t-[var(--primary-500)] rounded-full animate-spin;
+  }
+
+  /* Empty State */
+  .empty-state {
+    @apply flex flex-col items-center justify-center p-12 text-center;
+  }
+
+  .empty-state-icon {
+    @apply w-16 h-16 rounded-2xl bg-[var(--bg-tertiary)] flex items-center justify-center text-[var(--text-secondary)] mb-4;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out];
+  }
+
+  .modal {
+    @apply bg-[var(--bg-secondary)] bg-gradient-to-b from-[var(--bg-secondary)] to-[#0B1121] w-full rounded-2xl border border-[var(--border-primary)] shadow-2xl overflow-hidden animate-[scaleIn_0.2s_ease-out];
+  }
+
+  .modal-header {
+    @apply px-6 py-4 border-b border-[var(--border-primary)] flex items-center justify-between bg-[var(--bg-tertiary)]/30;
+  }
+
+  .modal-body {
+    @apply p-6 overflow-y-auto max-h-[80vh];
+  }
+
+  .modal-footer {
+    @apply px-6 py-4 border-t border-[var(--border-primary)] flex items-center justify-end gap-3 bg-[var(--bg-tertiary)]/30;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }

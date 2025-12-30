@@ -25,10 +25,10 @@ const typeIcons: Record<NotificationType, typeof Bell> = {
 };
 
 const typeColors: Record<NotificationType, string> = {
-    [NotificationType.MESSAGE]: 'bg-[var(--primary-500)]/20 text-[var(--primary-400)]',
-    [NotificationType.ROOM_INQUIRY]: 'bg-[var(--accent-500)]/20 text-[var(--accent-400)]',
-    [NotificationType.ROOM_UPDATE]: 'bg-[var(--success-500)]/20 text-[var(--success-400)]',
-    [NotificationType.SYSTEM]: 'bg-[var(--warning-500)]/20 text-[var(--warning-400)]',
+    [NotificationType.MESSAGE]: 'bg-[var(--primary-500)]/20 text-[var(--primary-400)] border border-[var(--primary-500)]/20',
+    [NotificationType.ROOM_INQUIRY]: 'bg-[var(--accent-500)]/20 text-[var(--accent-400)] border border-[var(--accent-500)]/20',
+    [NotificationType.ROOM_UPDATE]: 'bg-[var(--success-500)]/20 text-[var(--success-400)] border border-[var(--success-500)]/20',
+    [NotificationType.SYSTEM]: 'bg-[var(--warning-500)]/20 text-[var(--warning-400)] border border-[var(--warning-500)]/20',
 };
 
 export default function NotificationsPage() {
@@ -118,7 +118,7 @@ export default function NotificationsPage() {
     return (
         <div className="max-w-4xl mx-auto pt-12 lg:pt-0">
             {/* Page Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <div>
                     <h1 className="page-title">Notifications</h1>
                     <p className="page-subtitle">
@@ -140,7 +140,7 @@ export default function NotificationsPage() {
             </div>
 
             {/* Filters */}
-            <div className="card mb-6">
+            <div className="card mb-8 p-4 bg-[var(--bg-secondary)]/50 backdrop-blur-sm">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1 relative">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]" size={18} />
@@ -178,24 +178,28 @@ export default function NotificationsPage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div className="card-glass p-4">
-                    <p className="text-2xl font-bold text-[var(--primary-400)]">{notifications.length}</p>
-                    <p className="text-sm text-[var(--text-tertiary)]">Total</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div className="card-glass p-6 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--primary-500)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <p className="text-3xl font-bold text-[var(--primary-400)] mb-1">{notifications.length}</p>
+                    <p className="text-sm text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Total</p>
                 </div>
-                <div className="card-glass p-4">
-                    <p className="text-2xl font-bold text-[var(--error-400)]">{unreadCount}</p>
-                    <p className="text-sm text-[var(--text-tertiary)]">Unread</p>
+                <div className="card-glass p-6 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--error-500)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <p className="text-3xl font-bold text-[var(--error-400)] mb-1">{unreadCount}</p>
+                    <p className="text-sm text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Unread</p>
                 </div>
-                <div className="card-glass p-4">
-                    <p className="text-2xl font-bold text-[var(--success-400)]">
+                <div className="card-glass p-6 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--success-500)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <p className="text-3xl font-bold text-[var(--success-400)] mb-1">
                         {notifications.filter(n => n.read).length}
                     </p>
-                    <p className="text-sm text-[var(--text-tertiary)]">Read</p>
+                    <p className="text-sm text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Read</p>
                 </div>
-                <div className="card-glass p-4">
-                    <p className="text-2xl font-bold text-[var(--warning-400)]">{filteredNotifications.length}</p>
-                    <p className="text-sm text-[var(--text-tertiary)]">Filtered</p>
+                <div className="card-glass p-6 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--warning-500)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <p className="text-3xl font-bold text-[var(--warning-400)] mb-1">{filteredNotifications.length}</p>
+                    <p className="text-sm text-[var(--text-tertiary)] uppercase tracking-wider font-medium">Filtered</p>
                 </div>
             </div>
 
@@ -219,68 +223,73 @@ export default function NotificationsPage() {
                     </div>
                 </div>
             ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                     {filteredNotifications.map((notification) => {
                         const Icon = typeIcons[notification.data?.type] || Bell;
-                        const colorClass = typeColors[notification.data?.type] || 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]';
+                        const colorClass = typeColors[notification.data?.type] || 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-primary)]';
 
                         return (
                             <div
                                 key={notification.id}
-                                className={`card flex items-start gap-4 transition-all ${!notification.read
-                                        ? 'border-l-4 border-l-[var(--primary-500)] bg-[var(--primary-500)]/5'
-                                        : ''
+                                className={`card flex items-start gap-5 p-5 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg ${!notification.read
+                                    ? 'border-l-4 border-l-[var(--primary-500)] bg-[var(--primary-500)]/5 relative overflow-hidden'
+                                    : 'hover:bg-[var(--bg-tertiary)]/20'
                                     }`}
                             >
-                                <div className={`p-3 rounded-xl ${colorClass}`}>
-                                    <Icon size={20} />
+                                {/* Unread indicator glow */}
+                                {!notification.read && (
+                                    <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--primary-500)]/10 blur-[50px] rounded-full pointer-events-none -mr-10 -mt-10" />
+                                )}
+
+                                <div className={`p-3 rounded-xl shadow-inner ${colorClass} flex-shrink-0`}>
+                                    <Icon size={24} />
                                 </div>
 
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-start justify-between gap-4 mb-1">
-                                        <h3 className={`font-medium ${!notification.read ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'
+                                <div className="flex-1 min-w-0 z-10">
+                                    <div className="flex items-start justify-between gap-4 mb-2">
+                                        <h3 className={`font-semibold text-lg leading-tight ${!notification.read ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'
                                             }`}>
                                             {notification.title}
                                         </h3>
-                                        <span className="text-xs text-[var(--text-tertiary)] whitespace-nowrap">
+                                        <span className="text-xs font-medium text-[var(--text-tertiary)] whitespace-nowrap bg-[var(--bg-tertiary)]/50 px-2 py-1 rounded-lg">
                                             {formatTimeAgo(notification.createdAt)}
                                         </span>
                                     </div>
 
-                                    <p className="text-sm text-[var(--text-secondary)] mb-2">
+                                    <p className="text-[var(--text-secondary)] mb-3 leading-relaxed">
                                         {notification.body}
                                     </p>
 
                                     <div className="flex items-center gap-2">
                                         <span className={`badge ${notification.data?.type === NotificationType.MESSAGE ? 'badge-info' :
-                                                notification.data?.type === NotificationType.ROOM_INQUIRY ? 'badge-purple' :
-                                                    notification.data?.type === NotificationType.ROOM_UPDATE ? 'badge-success' :
-                                                        'badge-warning'
+                                            notification.data?.type === NotificationType.ROOM_INQUIRY ? 'badge-purple' :
+                                                notification.data?.type === NotificationType.ROOM_UPDATE ? 'badge-success' :
+                                                    'badge-warning'
                                             }`}>
                                             {notification.data?.type?.replace('_', ' ') || 'notification'}
                                         </span>
                                         {!notification.read && (
-                                            <span className="badge badge-error">Unread</span>
+                                            <span className="badge badge-error animate-pulse">Unread</span>
                                         )}
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-1 z-10 self-center">
                                     {!notification.read && (
                                         <button
                                             onClick={() => handleMarkAsRead(notification.id)}
-                                            className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:text-[var(--success-400)]"
+                                            className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)] text-[var(--text-tertiary)] hover:text-[var(--success-400)] transition-colors"
                                             title="Mark as read"
                                         >
-                                            <Check size={18} />
+                                            <Check size={20} />
                                         </button>
                                     )}
                                     <button
                                         onClick={() => handleDeleteNotification(notification.id)}
-                                        className="p-2 rounded-lg hover:bg-[rgba(239,68,68,0.1)] text-[var(--text-secondary)] hover:text-[var(--error-400)]"
+                                        className="p-2 rounded-lg hover:bg-[var(--error-400)]/10 text-[var(--text-tertiary)] hover:text-[var(--error-400)] transition-colors"
                                         title="Delete"
                                     >
-                                        <Trash2 size={18} />
+                                        <Trash2 size={20} />
                                     </button>
                                 </div>
                             </div>
