@@ -16,22 +16,35 @@ import {
     X,
     ChevronLeft,
     Command,
-    DoorOpen
+    Shield
 } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { adminApi } from '../api/admin';
+import { useRouter } from 'next/navigation';
 
 const navItems = [
     { href: '/', label: 'Overview', icon: LayoutDashboard },
-    { href: '/users', label: 'Users', icon: Users },
-    { href: '/rooms', label: 'Rooms', icon: Home },
-    { href: '/used-items', label: 'Marketplace', icon: Package },
-    { href: '/notifications', label: 'Notifications', icon: Bell },
+    { href: '/pages/users', label: 'Users', icon: Users },
+    { href: '/pages/rooms', label: 'Rooms', icon: Home },
+    { href: '/pages/used-items', label: 'Marketplace', icon: Package },
+    { href: '/pages/admin', label: 'Admins', icon: Shield },
+    { href: '/pages/notifications', label: 'Notifications', icon: Bell },
 ];
 
 export default function Sidebar() {
     const pathname = usePathname();
+    const router = useRouter();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+    const handleLogout = async () => {
+        try {
+            await adminApi.logout();
+            router.push('/pages/Auth/login');
+        } catch (error) {
+            console.error('Logout failed', error);
+        }
+    };
 
     return (
         <>
@@ -75,7 +88,6 @@ export default function Sidebar() {
                     {/* Header */}
                     <div className="p-6 flex items-center justify-between">
                         <div className="flex items-center gap-3 overflow-hidden">
-                            {/* New Logo: Indigo Gradient with Door Icon */}
                             {/* New Logo: Indigo Gradient with Door Icon */}
                             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--primary-600)] to-[var(--primary-800)] flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20 overflow-hidden">
                                 <img src="/Logo.png" alt="Hello Roomie" className="w-full h-full object-cover" />
@@ -200,6 +212,7 @@ export default function Sidebar() {
                         </Link>
 
                         <button
+                            onClick={handleLogout}
                             className={cn(
                                 "w-full flex items-center gap-3 px-3 py-3 rounded-xl font-medium text-sm text-[var(--error-400)] hover:bg-[var(--error-400)]/10 transition-all",
                                 isCollapsed && "justify-center"

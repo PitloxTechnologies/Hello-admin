@@ -17,8 +17,8 @@ import {
     List,
     Image as ImageIcon
 } from 'lucide-react';
-import { roomsApi } from '../api/rooms';
-import { Room, UserType } from '../api/types';
+import { roomsApi } from '../../api/rooms';
+import { Room, UserType } from '../../api/types';
 
 export default function RoomsPage() {
     const [rooms, setRooms] = useState<Room[]>([]);
