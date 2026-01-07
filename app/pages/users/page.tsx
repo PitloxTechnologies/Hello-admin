@@ -10,6 +10,7 @@ import {
     X,
     UserCheck,
     ShieldAlert,
+    Crown,
     ShieldCheck
 } from 'lucide-react';
 import { DataTable } from '../../components';
@@ -28,6 +29,7 @@ export default function UsersPage() {
         roomStatus: '',
         isActive: '',
         profileCompleted: '',
+        isPremium: '',
     });
 
     useEffect(() => {
@@ -67,6 +69,8 @@ export default function UsersPage() {
         if (filters.isActive === 'false' && user.isActive) return false;
         if (filters.profileCompleted === 'true' && !user.profileCompleted) return false;
         if (filters.profileCompleted === 'false' && user.profileCompleted) return false;
+        if (filters.isPremium === 'true' && !user.isPremium) return false;
+        if (filters.isPremium === 'false' && user.isPremium) return false;
         return true;
     });
 
@@ -76,17 +80,27 @@ export default function UsersPage() {
             label: 'User',
             render: (user: User) => (
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary-600)] to-violet-600 flex items-center justify-center text-white font-medium shadow-md shadow-indigo-500/20 overflow-hidden">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary-600)] to-violet-600 flex items-center justify-center text-white font-medium shadow-md shadow-indigo-500/20 overflow-hidden relative">
                         {user.profilePictureUrl ? (
                             <img src={user.profilePictureUrl} alt={user.fullName} className="w-full h-full object-cover" />
                         ) : (
                             user.fullName?.charAt(0) || user.displayName?.charAt(0) || '?'
                         )}
+                        {user.isPremium && (
+                            <div className="absolute -bottom-1 -right-1 bg-amber-400 rounded-full p-0.5 border-2 border-[var(--bg-secondary)]">
+                                <Crown size={8} className="text-white fill-white" />
+                            </div>
+                        )}
                     </div>
                     <div>
-                        <p className="font-medium text-[var(--text-primary)]">
-                            {user.fullName || user.displayName || 'Unknown'}
-                        </p>
+                        <div className="flex items-center gap-1.5">
+                            <p className="font-medium text-[var(--text-primary)]">
+                                {user.fullName || user.displayName || 'Unknown'}
+                            </p>
+                            {user.isPremium && (
+                                <Crown size={14} className="text-amber-400 fill-amber-400" />
+                            )}
+                        </div>
                         <p className="text-xs text-[var(--text-tertiary)] font-mono">{user.phoneNumber}</p>
                     </div>
                 </div>
@@ -191,13 +205,13 @@ export default function UsersPage() {
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="font-semibold text-[var(--text-primary)]">Filters</h3>
                         <button
-                            onClick={() => setFilters({ city: '', gender: '', roomStatus: '', isActive: '', profileCompleted: '' })}
+                            onClick={() => setFilters({ city: '', gender: '', roomStatus: '', isActive: '', profileCompleted: '', isPremium: '' })}
                             className="text-sm text-[var(--primary-400)] hover:text-[var(--primary-300)]"
                         >
                             Reset Filters
                         </button>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
                         <div>
                             <label className="block text-xs font-medium text-[var(--text-tertiary)] mb-1.5">City</label>
                             <input
@@ -257,14 +271,27 @@ export default function UsersPage() {
                                 <option value="false">Incomplete</option>
                             </select>
                         </div>
+                        <div>
+                            <label className="block text-xs font-medium text-[var(--text-tertiary)] mb-1.5">Membership</label>
+                            <select
+                                value={filters.isPremium}
+                                onChange={(e) => setFilters({ ...filters, isPremium: e.target.value })}
+                                className="input"
+                            >
+                                <option value="">All Members</option>
+                                <option value="true">Premium</option>
+                                <option value="false">Standard</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             )}
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 {[
                     { label: 'Total Users', value: users.length, color: 'text-[var(--primary-400)]' },
+                    { label: 'Premium', value: users.filter(u => u.isPremium).length, color: 'text-amber-400' },
                     { label: 'Active Now', value: users.filter(u => u.isActive).length, color: 'text-[var(--success-400)]' },
                     { label: 'Verified', value: users.filter(u => u.profileCompleted).length, color: 'text-[var(--accent-400)]' },
                     { label: 'Filtered', value: filteredUsers.length, color: 'text-[var(--warning-400)]' },

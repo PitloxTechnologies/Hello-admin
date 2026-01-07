@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Sidebar from './Sidebar';
+import Footer from './Footer';
 import { adminApi } from '../api/admin';
 
 export default function ClientLayout({
@@ -55,8 +56,11 @@ export default function ClientLayout({
         <>
             <Sidebar />
             <main className="lg:ml-[280px] min-h-screen p-6 transition-[margin] duration-300">
-                <div className="max-w-[1600px] mx-auto">
-                    {children}
+                <div className="max-w-[1600px] mx-auto min-h-[calc(100vh-3rem)] flex flex-col">
+                    <div className="flex-1">
+                        {children}
+                    </div>
+                    <Footer />
                 </div>
             </main>
         </>

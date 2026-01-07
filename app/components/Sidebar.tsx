@@ -200,16 +200,6 @@ export default function Sidebar() {
 
                     {/* Footer */}
                     <div className="p-4 border-t border-[var(--border-primary)] space-y-1 bg-[var(--bg-tertiary)]/30 backdrop-blur-md">
-                        <Link
-                            href="/settings"
-                            className={cn(
-                                "flex items-center gap-3 px-3 py-3 rounded-xl font-medium text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] transition-all",
-                                isCollapsed && "justify-center"
-                            )}
-                        >
-                            <Settings size={20} />
-                            {!isCollapsed && <span>Settings</span>}
-                        </Link>
 
                         <button
                             onClick={handleLogout}
