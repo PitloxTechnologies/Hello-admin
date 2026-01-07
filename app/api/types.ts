@@ -38,10 +38,13 @@ export interface User {
     isActive?: boolean;
     profileCompleted?: boolean;
     profilePictureUrl?: string;
+    isPremium?: boolean;
+    premiumPlanType?: string;
+    premiumExpiryDate?: Date;
     fcmToken?: string;
     createdAt?: Date;
     updatedAt?: Date;
-    lastLogin?: Date;
+    lastLoginAt?: Date;
 }
 
 // --- Room Types ---
@@ -114,4 +117,22 @@ export interface Notification {
     data: NotificationData;
     read: boolean;
     createdAt?: Date;
+}
+
+// --- Admin Types ---
+
+export interface Admin {
+    id: string;
+    name: string;
+    email: string;
+    password?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    lastLoginAt?: Date;
+}
+
+export interface AdminLoginResponse {
+    admin: Admin;
+    accessToken: string;
+    message: string;
 }

@@ -17,8 +17,8 @@ import {
     List,
     Image as ImageIcon
 } from 'lucide-react';
-import { roomsApi } from '../api/rooms';
-import { Room, UserType } from '../api/types';
+import { roomsApi } from '../../api/rooms';
+import { Room, UserType } from '../../api/types';
 
 export default function RoomsPage() {
     const [rooms, setRooms] = useState<Room[]>([]);
@@ -26,6 +26,7 @@ export default function RoomsPage() {
     const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [searchQuery, setSearchQuery] = useState('');
+    const [currentImageIndex, setCurrentImageIndex] = useState(0); // Added for image carousel
     const [filters, setFilters] = useState({
         city: '',
         userType: '',
@@ -36,6 +37,11 @@ export default function RoomsPage() {
     useEffect(() => {
         loadRooms();
     }, []);
+
+    // Reset image index when modal opens/closes
+    useEffect(() => {
+        if (selectedRoom) setCurrentImageIndex(0);
+    }, [selectedRoom]);
 
     const loadRooms = async () => {
         try {
@@ -330,13 +336,42 @@ export default function RoomsPage() {
                         </div>
                         <div className="flex-1 overflow-hidden lg:grid lg:grid-cols-2">
                             {/* Left: Images */}
-                            <div className="bg-black/20 p-6 flex items-center justify-center overflow-auto h-64 lg:h-auto border-b lg:border-b-0 lg:border-r border-[var(--border-primary)]">
+                            <div className="bg-black/20 p-6 flex items-center justify-center overflow-hidden h-64 lg:h-auto border-b lg:border-b-0 lg:border-r border-[var(--border-primary)] relative group">
                                 {selectedRoom.imageUrls && selectedRoom.imageUrls.length > 0 ? (
-                                    <img
-                                        src={selectedRoom.imageUrls[0]}
-                                        alt={selectedRoom.city}
-                                        className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-                                    />
+                                    <>
+                                        <img
+                                            src={selectedRoom.imageUrls[currentImageIndex]}
+                                            alt={`${selectedRoom.city} - Image ${currentImageIndex + 1}`}
+                                            className="max-w-full max-h-full object-contain rounded-lg shadow-2xl transition-opacity duration-300"
+                                        />
+
+                                        {/* Image Navigation */}
+                                        {selectedRoom.imageUrls.length > 1 && (
+                                            <>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setCurrentImageIndex(prev => prev === 0 ? selectedRoom.imageUrls!.length - 1 : prev - 1);
+                                                    }}
+                                                    className="absolute left-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors opacity-0 group-hover:opacity-100"
+                                                >
+                                                    ←
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setCurrentImageIndex(prev => prev === selectedRoom.imageUrls!.length - 1 ? 0 : prev + 1);
+                                                    }}
+                                                    className="absolute right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors opacity-0 group-hover:opacity-100"
+                                                >
+                                                    →
+                                                </button>
+                                                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 px-3 py-1 rounded-full text-white text-xs backdrop-blur-sm">
+                                                    {currentImageIndex + 1} / {selectedRoom.imageUrls.length}
+                                                </div>
+                                            </>
+                                        )}
+                                    </>
                                 ) : (
                                     <div className="flex flex-col items-center text-[var(--text-tertiary)]">
                                         <ImageIcon size={64} className="opacity-50" />
@@ -370,10 +405,22 @@ export default function RoomsPage() {
                                         {selectedRoom.userType}
                                     </span>
                                     <span className="badge badge-success px-3 py-1 text-sm">{selectedRoom.sizeOfPlace}</span>
-                                    <span className="badge bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--border-primary)] px-3 py-1 text-sm">
-                                        {formatTimeAgo(selectedRoom.createdAt)}
+                                    <span className="badge bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--border-primary)] px-3 py-1 text-sm" title="Created At">
+                                        Created: {formatTimeAgo(selectedRoom.createdAt)}
                                     </span>
+                                    {selectedRoom.updatedAt && (
+                                        <span className="badge bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-[var(--border-primary)] px-3 py-1 text-sm" title="Updated At">
+                                            Updated: {formatTimeAgo(selectedRoom.updatedAt)}
+                                        </span>
+                                    )}
                                 </div>
+
+                                {selectedRoom.userId && (
+                                    <div className="mb-6 flex items-center gap-2 text-sm text-[var(--text-secondary)] bg-[var(--bg-tertiary)] px-3 py-2 rounded-lg border border-[var(--border-primary)] w-fit">
+                                        <User size={14} className="text-[var(--primary-400)]" />
+                                        <span className="font-mono text-xs">{selectedRoom.userId}</span>
+                                    </div>
+                                )}
 
                                 <div className="mb-8">
                                     <h4 className="text-sm font-medium text-[var(--text-tertiary)] uppercase tracking-wider mb-3">Description</h4>

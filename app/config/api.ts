@@ -1,5 +1,6 @@
-// const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://hello-backend-five.vercel.app';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+// const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://hello-backend-five.vercel.app';
+
 
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
@@ -37,6 +38,7 @@ export async function api<T>(
     // 2. Prepare request init
     const init: RequestInit = {
         method,
+        credentials: 'include', // Include credentials (cookies) for CORS requests
         headers: {
             'Content-Type': 'application/json',
             ...headers,

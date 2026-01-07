@@ -17,8 +17,8 @@ import {
     Star,
     ShoppingBag
 } from 'lucide-react';
-import { usedItemsApi } from '../api/used-items';
-import { UsedItem, ItemCondition } from '../api/types';
+import { usedItemsApi } from '../../api/used-items';
+import { UsedItem, ItemCondition } from '../../api/types';
 
 const conditionColors: Record<ItemCondition, string> = {
     [ItemCondition.NEW]: 'badge-success',

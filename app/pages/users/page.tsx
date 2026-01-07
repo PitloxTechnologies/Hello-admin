@@ -10,12 +10,13 @@ import {
     X,
     UserCheck,
     ShieldAlert,
+    Crown,
     ShieldCheck
 } from 'lucide-react';
-import { DataTable } from '../components';
-import { usersApi } from '../api/users';
-import { User, Gender } from '../api/types';
-import { cn } from '../lib/utils';
+import { DataTable } from '../../components';
+import { usersApi } from '../../api/users';
+import { User, Gender } from '../../api/types';
+import { cn } from '../../lib/utils';
 
 export default function UsersPage() {
     const [users, setUsers] = useState<User[]>([]);
@@ -28,6 +29,7 @@ export default function UsersPage() {
         roomStatus: '',
         isActive: '',
         profileCompleted: '',
+        isPremium: '',
     });
 
     useEffect(() => {
@@ -67,6 +69,8 @@ export default function UsersPage() {
         if (filters.isActive === 'false' && user.isActive) return false;
         if (filters.profileCompleted === 'true' && !user.profileCompleted) return false;
         if (filters.profileCompleted === 'false' && user.profileCompleted) return false;
+        if (filters.isPremium === 'true' && !user.isPremium) return false;
+        if (filters.isPremium === 'false' && user.isPremium) return false;
         return true;
     });
 
@@ -76,17 +80,27 @@ export default function UsersPage() {
             label: 'User',
             render: (user: User) => (
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary-600)] to-violet-600 flex items-center justify-center text-white font-medium shadow-md shadow-indigo-500/20 overflow-hidden">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--primary-600)] to-violet-600 flex items-center justify-center text-white font-medium shadow-md shadow-indigo-500/20 overflow-hidden relative">
                         {user.profilePictureUrl ? (
                             <img src={user.profilePictureUrl} alt={user.fullName} className="w-full h-full object-cover" />
                         ) : (
                             user.fullName?.charAt(0) || user.displayName?.charAt(0) || '?'
                         )}
+                        {user.isPremium && (
+                            <div className="absolute -bottom-1 -right-1 bg-amber-400 rounded-full p-0.5 border-2 border-[var(--bg-secondary)]">
+                                <Crown size={8} className="text-white fill-white" />
+                            </div>
+                        )}
                     </div>
                     <div>
-                        <p className="font-medium text-[var(--text-primary)]">
-                            {user.fullName || user.displayName || 'Unknown'}
-                        </p>
+                        <div className="flex items-center gap-1.5">
+                            <p className="font-medium text-[var(--text-primary)]">
+                                {user.fullName || user.displayName || 'Unknown'}
+                            </p>
+                            {user.isPremium && (
+                                <Crown size={14} className="text-amber-400 fill-amber-400" />
+                            )}
+                        </div>
                         <p className="text-xs text-[var(--text-tertiary)] font-mono">{user.phoneNumber}</p>
                     </div>
                 </div>
@@ -191,13 +205,13 @@ export default function UsersPage() {
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="font-semibold text-[var(--text-primary)]">Filters</h3>
                         <button
-                            onClick={() => setFilters({ city: '', gender: '', roomStatus: '', isActive: '', profileCompleted: '' })}
+                            onClick={() => setFilters({ city: '', gender: '', roomStatus: '', isActive: '', profileCompleted: '', isPremium: '' })}
                             className="text-sm text-[var(--primary-400)] hover:text-[var(--primary-300)]"
                         >
                             Reset Filters
                         </button>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
                         <div>
                             <label className="block text-xs font-medium text-[var(--text-tertiary)] mb-1.5">City</label>
                             <input
@@ -257,14 +271,27 @@ export default function UsersPage() {
                                 <option value="false">Incomplete</option>
                             </select>
                         </div>
+                        <div>
+                            <label className="block text-xs font-medium text-[var(--text-tertiary)] mb-1.5">Membership</label>
+                            <select
+                                value={filters.isPremium}
+                                onChange={(e) => setFilters({ ...filters, isPremium: e.target.value })}
+                                className="input"
+                            >
+                                <option value="">All Members</option>
+                                <option value="true">Premium</option>
+                                <option value="false">Standard</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             )}
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 {[
                     { label: 'Total Users', value: users.length, color: 'text-[var(--primary-400)]' },
+                    { label: 'Premium', value: users.filter(u => u.isPremium).length, color: 'text-amber-400' },
                     { label: 'Active Now', value: users.filter(u => u.isActive).length, color: 'text-[var(--success-400)]' },
                     { label: 'Verified', value: users.filter(u => u.profileCompleted).length, color: 'text-[var(--accent-400)]' },
                     { label: 'Filtered', value: filteredUsers.length, color: 'text-[var(--warning-400)]' },
@@ -354,54 +381,149 @@ export default function UsersPage() {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-                                <div>
-                                    <h4 className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Location</h4>
-                                    <p className="text-[var(--text-primary)] border-l-2 border-[var(--border-accent)] pl-3">{selectedUser.city || 'Not specified'}</p>
-                                </div>
-                                <div>
-                                    <h4 className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Hometown</h4>
-                                    <p className="text-[var(--text-primary)] border-l-2 border-[var(--border-primary)] pl-3">{selectedUser.hometown || 'Not specified'}</p>
-                                </div>
-
-                                <div>
-                                    <h4 className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Demographics</h4>
-                                    <div className="flex gap-4 text-sm">
+                            <div className="grid grid-cols-2 gap-x-8 gap-y-8">
+                                {/* Demographics */}
+                                <div className="col-span-2 sm:col-span-1 space-y-4">
+                                    <h4 className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider border-b border-[var(--border-secondary)] pb-2 mb-3">Basic Info</h4>
+                                    <div className="space-y-3">
                                         <div>
-                                            <span className="text-[var(--text-tertiary)] block text-xs">Gender</span>
-                                            <span className="text-[var(--text-primary)]">{selectedUser.gender || '-'}</span>
+                                            <span className="text-[var(--text-tertiary)] block text-xs">Location</span>
+                                            <span className="text-[var(--text-primary)] font-medium">{selectedUser.city || 'Not specified'}</span>
                                         </div>
                                         <div>
-                                            <span className="text-[var(--text-tertiary)] block text-xs">Age</span>
-                                            <span className="text-[var(--text-primary)]">{selectedUser.age || '-'}</span>
+                                            <span className="text-[var(--text-tertiary)] block text-xs">Hometown</span>
+                                            <span className="text-[var(--text-primary)]">{selectedUser.hometown || '-'}</span>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <span className="text-[var(--text-tertiary)] block text-xs">Gender</span>
+                                                <span className="text-[var(--text-primary)]">{selectedUser.gender || '-'}</span>
+                                            </div>
+                                            <div>
+                                                <span className="text-[var(--text-tertiary)] block text-xs">Age</span>
+                                                <span className="text-[var(--text-primary)]">{selectedUser.age || '-'}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div>
-                                    <h4 className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Requirement</h4>
-                                    <p className="text-[var(--text-primary)]">{selectedUser.roomStatus || '-'}</p>
+                                {/* Premium & Status */}
+                                <div className="col-span-2 sm:col-span-1 space-y-4">
+                                    <h4 className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider border-b border-[var(--border-secondary)] pb-2 mb-3">Membership</h4>
+                                    <div className="space-y-3">
+                                        <div>
+                                            <span className="text-[var(--text-tertiary)] block text-xs">Plan Status</span>
+                                            {selectedUser.isPremium ? (
+                                                <span className="badge bg-amber-500/10 text-amber-500 border-amber-500/20 mt-1">Premium Member</span>
+                                            ) : (
+                                                <span className="badge bg-[var(--bg-elevated)] text-[var(--text-secondary)] mt-1">Free Plan</span>
+                                            )}
+                                        </div>
+                                        {selectedUser.isPremium && (
+                                            <>
+                                                <div>
+                                                    <span className="text-[var(--text-tertiary)] block text-xs">Plan Type</span>
+                                                    <span className="text-[var(--text-primary)] capitalize">{selectedUser.premiumPlanType}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-[var(--text-tertiary)] block text-xs">Expires On</span>
+                                                    <span className="text-[var(--text-primary)]">
+                                                        {selectedUser.premiumExpiryDate ? new Date(selectedUser.premiumExpiryDate).toLocaleDateString() : '-'}
+                                                    </span>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
 
+                                {/* Lifestyle Grid */}
+                                <div className="col-span-2 space-y-4">
+                                    <h4 className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider border-b border-[var(--border-secondary)] pb-2 mb-3">Lifestyle & Habits</h4>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                        <div className="p-3 rounded-xl bg-[var(--bg-tertiary)]/50 border border-[var(--border-primary)]">
+                                            <span className="text-[var(--text-tertiary)] block text-xs mb-1">Work Schedule</span>
+                                            <span className="text-[var(--text-primary)] text-sm">{selectedUser.workSchedule || '-'}</span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-[var(--bg-tertiary)]/50 border border-[var(--border-primary)]">
+                                            <span className="text-[var(--text-tertiary)] block text-xs mb-1">Marital Status</span>
+                                            <span className="text-[var(--text-primary)] text-sm">{selectedUser.maritalStatus || '-'}</span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-[var(--bg-tertiary)]/50 border border-[var(--border-primary)]">
+                                            <span className="text-[var(--text-tertiary)] block text-xs mb-1">Dietary</span>
+                                            <span className="text-[var(--text-primary)] text-sm">{selectedUser.foodHabits || '-'}</span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-[var(--bg-tertiary)]/50 border border-[var(--border-primary)]">
+                                            <span className="text-[var(--text-tertiary)] block text-xs mb-1">Smoking</span>
+                                            <span className={cn("text-sm", selectedUser.smokingHabits === 'Never' ? "text-emerald-400" : "text-[var(--text-primary)]")}>
+                                                {selectedUser.smokingHabits || '-'}
+                                            </span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-[var(--bg-tertiary)]/50 border border-[var(--border-primary)]">
+                                            <span className="text-[var(--text-tertiary)] block text-xs mb-1">Drinking</span>
+                                            <span className={cn("text-sm", selectedUser.drinkingHabits === 'Never' ? "text-emerald-400" : "text-[var(--text-primary)]")}>
+                                                {selectedUser.drinkingHabits || '-'}
+                                            </span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-[var(--bg-tertiary)]/50 border border-[var(--border-primary)]">
+                                            <span className="text-[var(--text-tertiary)] block text-xs mb-1">Pets</span>
+                                            <span className="text-[var(--text-primary)] text-sm">{selectedUser.petsPreference || '-'}</span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-[var(--bg-tertiary)]/50 border border-[var(--border-primary)]">
+                                            <span className="text-[var(--text-tertiary)] block text-xs mb-1">Partying</span>
+                                            <span className="text-[var(--text-primary)] text-sm">{selectedUser.partyingFrequency || '-'}</span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-[var(--bg-tertiary)]/50 border border-[var(--border-primary)]">
+                                            <span className="text-[var(--text-tertiary)] block text-xs mb-1">Guests</span>
+                                            <span className="text-[var(--text-primary)] text-sm">{selectedUser.guestFrequency || '-'}</span>
+                                        </div>
+                                        <div className="p-3 rounded-xl bg-[var(--bg-tertiary)]/50 border border-[var(--border-primary)]">
+                                            <span className="text-[var(--text-tertiary)] block text-xs mb-1">Cleaning</span>
+                                            <span className="text-[var(--text-primary)] text-sm">{selectedUser.roomCleaning || '-'}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Requirements */}
+                                <div className="col-span-2 sm:col-span-1 space-y-2">
+                                    <h4 className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Requirement</h4>
+                                    <div className="p-3 rounded-xl bg-[var(--bg-tertiary)]/30 border border-[var(--border-primary)]">
+                                        <p className="text-[var(--text-primary)] font-medium mb-1">{selectedUser.roomStatus || '-'}</p>
+                                        <div className="flex gap-4 text-xs text-[var(--text-secondary)]">
+                                            <span>Urgency: {selectedUser.howFastNeedsRoommate || '-'}</span>
+                                            <span>Duration: {selectedUser.howLongNeedsRoommate || '-'}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Bio */}
                                 <div className="col-span-2">
                                     <h4 className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-2">Bio</h4>
-                                    <p className="text-[var(--text-secondary)] bg-[var(--bg-tertiary)] p-3 rounded-xl text-sm leading-relaxed">
-                                        {selectedUser.introduction || 'No introduction provided.'}
+                                    <p className="text-[var(--text-secondary)] bg-[var(--bg-tertiary)]/50 p-4 rounded-xl text-sm leading-relaxed border border-[var(--border-primary)]">
+                                        "{selectedUser.introduction || 'No introduction provided.'}"
                                     </p>
                                 </div>
 
+                                {/* Interests */}
                                 {selectedUser.interests && selectedUser.interests.length > 0 && (
                                     <div className="col-span-2">
                                         <h4 className="text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-3">Interests</h4>
                                         <div className="flex flex-wrap gap-2">
                                             {selectedUser.interests.map((interest, i) => (
-                                                <span key={i} className="px-2.5 py-1 rounded-full bg-[var(--bg-tertiary)] border border-[var(--border-primary)] text-sm text-[var(--text-secondary)]">
+                                                <span key={i} className="px-3 py-1.5 rounded-full bg-[var(--bg-elevated)]/50 border border-[var(--border-primary)] text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
                                                     {interest}
                                                 </span>
                                             ))}
                                         </div>
                                     </div>
                                 )}
+
+                                {/* Timeline */}
+                                <div className="col-span-2 border-t border-[var(--border-primary)] pt-6 mt-2">
+                                    <div className="flex justify-between text-xs text-[var(--text-tertiary)]">
+                                        <span>Joined: {selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString() : '-'}</span>
+                                        <span>Last Login: {selectedUser.lastLoginAt ? new Date(selectedUser.lastLoginAt).toLocaleString() : 'Never'}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

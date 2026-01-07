@@ -14,8 +14,8 @@ import {
     X,
     MoreVertical
 } from 'lucide-react';
-import { notificationsApi } from '../api/notifications';
-import { Notification, NotificationType } from '../api/types';
+import { notificationsApi } from '../../api/notifications';
+import { Notification, NotificationType } from '../../api/types';
 
 const typeIcons: Record<NotificationType, typeof Bell> = {
     [NotificationType.MESSAGE]: MessageSquare,

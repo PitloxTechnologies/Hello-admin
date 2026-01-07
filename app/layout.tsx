@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Sidebar } from "./components";
+import { ClientLayout } from "./components";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -21,12 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
-        <Sidebar />
-        <main className="lg:ml-[100px] xl:ml-[300px] min-h-screen p-6 transition-[margin] duration-300">
-          <div className="max-w-[1600px] mx-auto">
-            {children}
-          </div>
-        </main>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
