@@ -1,5 +1,5 @@
-// const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://hello-backend-five.vercel.app';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+// const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://hello-backend-five.vercel.app';
 
 
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
