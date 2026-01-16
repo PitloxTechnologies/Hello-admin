@@ -16,7 +16,10 @@ import {
     X,
     ChevronLeft,
     Command,
-    Shield
+    Shield,
+    Flag,
+    LifeBuoy,
+    Megaphone
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { adminApi } from '../api/admin';
@@ -28,6 +31,9 @@ const navItems = [
     { href: '/pages/rooms', label: 'Rooms', icon: Home },
     { href: '/pages/used-items', label: 'Marketplace', icon: Package },
     { href: '/pages/admin', label: 'Admins', icon: Shield },
+    { href: '/pages/reports', label: 'Reports', icon: Flag },
+    { href: '/pages/support', label: 'Support', icon: LifeBuoy },
+    { href: '/pages/notify', label: 'Notify', icon: Megaphone },
     { href: '/pages/notifications', label: 'Notifications', icon: Bell },
 ];
 

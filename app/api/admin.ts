@@ -1,5 +1,5 @@
 import { api } from '../config/api';
-import { Admin, AdminLoginResponse } from './types';
+import { Admin, AdminLoginResponse, Report, SupportTicket, ReportStatus, SupportTicketStatus, Notify, CreateNotifyDto, UpdateNotifyDto } from './types';
 
 export const adminApi = {
     /**
@@ -49,4 +49,88 @@ export const adminApi = {
      */
     deleteAdmin: (id: string) =>
         api<{ message: string }>(`/admin/${id}`, { method: 'DELETE' }),
+
+    // --- Reports API ---
+
+    /**
+     * Get all reports
+     */
+    getReports: () =>
+        api<Report[]>('/reports'),
+
+    /**
+     * Get report by ID
+     */
+    getReport: (id: string) =>
+        api<Report>(`/reports/${id}`),
+
+    /**
+     * Update report
+     */
+    updateReport: (id: string, data: Partial<Pick<Report, 'status' | 'adminNotes'>>) =>
+        api<Report>(`/reports/${id}`, { method: 'PATCH', body: data }),
+
+    /**
+     * Delete report
+     */
+    deleteReport: (id: string) =>
+        api<{ message: string }>(`/reports/${id}`, { method: 'DELETE' }),
+
+    // --- Support API ---
+
+    /**
+     * Get all support tickets
+     */
+    getSupportTickets: () =>
+        api<SupportTicket[]>('/support'),
+
+    /**
+     * Get support ticket by ID
+     */
+    getSupportTicket: (id: string) =>
+        api<SupportTicket>(`/support/${id}`),
+
+    /**
+     * Update support ticket
+     */
+    updateSupportTicket: (id: string, data: Partial<Pick<SupportTicket, 'status' | 'adminResponse'>>) =>
+        api<SupportTicket>(`/support/${id}`, { method: 'PATCH', body: data }),
+
+    /**
+     * Delete support ticket
+     */
+    deleteSupportTicket: (id: string) =>
+        api<{ message: string }>(`/support/${id}`, { method: 'DELETE' }),
+
+    // --- Notify API ---
+
+    /**
+     * Get all notifications
+     */
+    getNotifications: () =>
+        api<Notify[]>('/notify'),
+
+    /**
+     * Get notification by ID
+     */
+    getNotification: (id: string) =>
+        api<Notify>(`/notify/${id}`),
+
+    /**
+     * Create a new notification
+     */
+    createNotification: (data: CreateNotifyDto) =>
+        api<Notify>('/notify', { method: 'POST', body: data }),
+
+    /**
+     * Update notification by ID
+     */
+    updateNotification: (id: string, data: UpdateNotifyDto) =>
+        api<Notify>(`/notify/${id}`, { method: 'PATCH', body: data }),
+
+    /**
+     * Delete notification by ID
+     */
+    deleteNotification: (id: string) =>
+        api<{ message: string }>(`/notify/${id}`, { method: 'DELETE' }),
 };

@@ -136,3 +136,100 @@ export interface AdminLoginResponse {
     accessToken: string;
     message: string;
 }
+
+// --- Report Types ---
+
+export enum ReportStatus {
+    PENDING = 'pending',
+    REVIEWED = 'reviewed',
+    ACTION_TAKEN = 'actionTaken',
+    DISMISSED = 'dismissed',
+}
+
+export enum ReportType {
+    USER = 'user',
+    ROOM = 'room',
+    ITEM = 'item',
+    MESSAGE = 'message',
+}
+
+export enum ReportReason {
+    INAPPROPRIATE_CONTENT = 'inappropriateContent',
+    HARASSMENT = 'harassment',
+    SPAM = 'spam',
+    FAKE_PROFILE = 'fakeProfile',
+    SCAM = 'scam',
+    OFFENSIVE_LANGUAGE = 'offensiveLanguage',
+    INAPPROPRIATE_PHOTOS = 'inappropriatePhotos',
+    OTHER = 'other',
+}
+
+export interface Report {
+    id: string;
+    reporterId: string;
+    reporterName?: string;
+    type: ReportType;
+    targetId: string;
+    targetName?: string;
+    reason: ReportReason;
+    description?: string;
+    screenshotUrls?: string[];
+    status: ReportStatus;
+    adminNotes?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    reviewedAt?: Date;
+}
+
+// --- Support Types ---
+
+export enum SupportTicketStatus {
+    OPEN = 'open',
+    IN_PROGRESS = 'inProgress',
+    RESOLVED = 'resolved',
+    CLOSED = 'closed',
+}
+
+export enum SupportCategory {
+    ACCOUNT_ISSUE = 'accountIssue',
+    TECHNICAL_PROBLEM = 'technicalProblem',
+    PAYMENT_ISSUE = 'paymentIssue',
+    REPORT_USER = 'reportUser',
+    FEATURE_REQUEST = 'featureRequest',
+    OTHER = 'other',
+}
+
+export interface SupportTicket {
+    id: string;
+    userId: string;
+    userEmail: string;
+    userName?: string;
+    category: SupportCategory;
+    subject: string;
+    description: string;
+    attachmentUrls?: string[];
+    status: SupportTicketStatus;
+    adminResponse?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    resolvedAt?: Date;
+}
+
+// --- Notify Types ---
+
+export interface Notify {
+    id: string;
+    title: string;
+    description?: string;
+    createdAt?: Date;
+}
+
+export interface CreateNotifyDto {
+    title: string;
+    description?: string;
+}
+
+export interface UpdateNotifyDto {
+    title?: string;
+    description?: string;
+}
